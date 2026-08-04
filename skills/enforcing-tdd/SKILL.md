@@ -23,7 +23,7 @@ Wrote implementation before a test? Delete it. Start over. Don't keep it as "ref
 
 ### RED
 1. Write ONE test for the next small behavior. The test name states the behavior.
-2. Run the suite. The new test must FAIL, **for the expected reason**: a missing behavior. A compile error, import error, or typo is not a valid RED — fix those and re-run until the failure is the assertion you wrote.
+2. Run the suite. The new test must FAIL, **for the expected reason**: a missing behavior. A compile error, typo, or accidental import error is not a valid RED — fix those and re-run until the failure is the assertion you wrote. Exception: for the FIRST test of a module that does not exist yet, the module-not-found error IS the expected failure.
 3. Read the failure output. Keep it — it is your evidence.
 
 ### GREEN

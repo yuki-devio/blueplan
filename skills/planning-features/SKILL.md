@@ -28,9 +28,9 @@ Plans live in the project's `docs/plans/` directory, one file per feature. They 
 
 ## The Process
 
-1. **Number it.** `ls docs/plans/` → next `NNN` (zero-padded, e.g. `003`). Filename: `docs/plans/NNN-<feature-slug>.md`.
+1. **Number it.** `ls docs/plans/` → next `NNN` (zero-padded, e.g. `003`), ignoring files without an `NNN-` prefix (README etc.). Filename: `docs/plans/NNN-<feature-slug>.md`.
 2. **Copy the template.** Copy `templates/plan-template.md` from this skill's own directory (resolve relative to this SKILL.md, not the project cwd).
-3. **Fill the header.** Frontmatter (`status: draft`), `## Context` (3–8 sentences for a zero-context reader), `## Out of Scope`, `references` (PRD section, architecture section, relevant `.claude/docs/` files), exact `test_command`.
+3. **Fill the header.** Frontmatter (`status: draft`), `## Context` (3–8 sentences for a zero-context reader), `## Out of Scope`, `references` (PRD section, architecture section, relevant `.claude/docs/` files), exact `test_command` — **run it once now** to verify it works, and record the result in Context. Only list references that have real content; if a doc is still a TODO scaffold, omit it and note that in the relevant step's Guidance instead.
 4. **Decompose into steps.** Apply the step-sizing rules below. For each step fill: Goal, Files (paths from repo root), Test Spec, Implementation Guidance, Acceptance Criteria. Leave every `### Implementation Notes` slot as the placeholder — the executor fills those.
 5. **Fill the Step Index** table and `total_steps`.
 6. **Run the Stranger Test** (below), fix what fails.
@@ -44,6 +44,8 @@ Each step must be:
 - **Testable on its own**: it has a concrete Test Spec, and the whole suite is green when the step is done — never leave the build broken between steps
 - **Ordered by dependency**: `Depends on:` lists the step numbers whose Implementation Notes this step needs
 - **Specific**: if you cannot write the Test Spec for a step, the step is not understood yet — split it or research first
+
+A later step MAY deliberately change an earlier step's test when behavior legitimately evolves — but only if BOTH steps' Test Specs state the change explicitly, so the executor knows it is planned, not a regression.
 
 ## The Stranger Test
 

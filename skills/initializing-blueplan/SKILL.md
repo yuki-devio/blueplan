@@ -30,7 +30,7 @@ For each template file, if the target does not exist, copy it. If it EXISTS, do 
 - Replace `<PROJECT_NAME>` everywhere
 - `testing.md`: fill the detected test commands (confirm with the user if ambiguous) — this is the canonical source plans copy `test_command` from
 - `INDEX.md`: keep all seeded rows; if a doc type clearly doesn't apply (e.g. design-guide for a pure CLI/library), you may comment out its row — but keep the file for later
-- Leave genuinely project-specific content as the `TODO(프로젝트별로 작성)` markers — do NOT invent conventions the user never stated
+- Leave genuinely project-specific content as the `TODO(프로젝트별로 작성)` markers — do NOT invent conventions the user never stated. **Detected facts are not inventions**: things observable from the codebase (language, module system, directory layout, existing dependencies) SHOULD be written into `architecture.md`'s Overview/Module Map even without the user
 
 ### 4. Wire up CLAUDE.md
 

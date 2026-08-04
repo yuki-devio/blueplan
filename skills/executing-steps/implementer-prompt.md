@@ -30,7 +30,7 @@ Test command: `{TEST_COMMAND}`
 ## Mandatory process: TDD
 
 1. Write the tests from the step's **Test Spec** FIRST. Do not write any implementation code yet.
-2. Run `{TEST_COMMAND}`. The new tests MUST fail, and fail for the expected reason (a missing behavior — not a typo, import error, or syntax error). Copy the failing output.
+2. Run `{TEST_COMMAND}`. The new tests MUST fail, and fail for the expected reason (a missing behavior — not a typo or syntax error; for the first test of a module that does not exist yet, the module-not-found error IS the expected reason). Copy the failing output.
 3. Implement the minimum code to make them pass.
 4. Run `{TEST_COMMAND}` again. The WHOLE suite must pass, not just your new tests. Copy the passing output.
 5. Refactor only with a green suite.
