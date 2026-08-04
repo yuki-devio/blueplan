@@ -1,0 +1,20 @@
+{
+  "name": "blueplan",
+  "description": "Documentation-driven, step-based, TDD-first development workflow: project docs (architecture/PRD/ADR), per-feature step plans executable across sessions, subagent-driven step execution with implementation notes, and reference-doc routing.",
+  "version": "0.1.0",
+  "author": {
+    "name": "yuki-devio",
+    "email": "wpdldks@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "documentation",
+    "planning",
+    "tdd",
+    "workflow",
+    "subagents",
+    "문서화",
+    "플랜",
+    "단계실행"
+  ]
+}
