@@ -39,6 +39,7 @@ executing-steps ◄──────┐     (loop: dispatch subagent → verify
 | "구현해줘", "이어서 해줘", executing/resuming a plan | blueplan:executing-steps |
 | Writing any implementation code | blueplan:enforcing-tdd |
 | About to code/design/test — which project rules apply? | blueplan:consulting-references |
+| "AI가 뭘 할 수 있어?", 권한·위험 점검, 프로덕션 DB/배포 앞에서 불안할 때 | blueplan:auditing-permissions |
 
 ## The One Rule
 

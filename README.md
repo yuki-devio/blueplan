@@ -66,6 +66,24 @@ init (1회) → 문서화 (상시) → 기능 플랜 작성 → 스텝 실행 �
 | `executing-steps` | 플랜 실행/재개 | 서브에이전트 디스패치 → 검증 → 구현 노트 기록 |
 | `enforcing-tdd` | 모든 구현 코드 작성 전 | RED→GREEN→REFACTOR 강제 |
 | `consulting-references` | 코딩/디자인/테스트 작업 전 | INDEX.md 라우팅으로 참조 문서 로드 |
+| `auditing-permissions` | "권한 검사해줘", 위험 점검 요청 시 | AI의 실효 권한·위험도·해결방안을 md 리포트로 정리 (읽기 전용) |
+
+## 권한 감사
+
+"git 푸시해줘", "DB 정리해줘"라고 말할 때 **AI에게 실제로 어떤 권한이 있는지** 모르는 게 바이브코딩의 가장 큰 위험이다. 권한은 Claude Code 설정 3계층 · MCP 서버 · `.env` · CLI 로그인 상태 · git 원격 인증에 흩어져 있어서 한 곳만 봐서는 알 수 없다.
+
+```
+"권한 검사해줘"  →  auditing-permissions
+```
+
+산출물 2개:
+
+- `docs/security/permission-audit-YYYY-MM-DD.md` — 리소스별 **읽기/생성/수정/삭제 능력 매트릭스**, 위험 항목마다 `file:line` 근거 · 최악의 시나리오 · 복사 가능한 해결방안 · 되돌리는 법 · 확인하지 못한 것
+- `.claude/docs/permissions.md` — 이후 세션이 매번 읽는 짧은 경계 문서
+
+검사 범위: Claude Code 권한(`allow`/`deny`/`defaultMode`/hooks/MCP/플러그인) · 파일시스템·git·GitHub 토큰 스코프 · Supabase(anon vs service_role, RLS 우회, `NEXT_PUBLIC_` 노출, MCP read-only 여부) · Prisma/Drizzle/Postgres/Redis · AWS/GCP/Vercel/kubectl 컨텍스트/SSH · 외부 전송 경로 · npm publish·postinstall.
+
+**감사기는 읽기 전용이다.** 화이트리스트에 있는 상태 조회 명령만 실행하고, 시크릿 값은 기록하지 않으며(이름 + 앞 4자 + 길이만), 산출물 2개 외에는 어떤 파일도 수정하지 않는다. `.claude/docs/INDEX.md` 한 줄 추가만 사용자에게 물어본다.
 
 ## 플랜 문서 구조 (요약)
 
