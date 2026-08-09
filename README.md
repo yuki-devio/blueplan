@@ -19,6 +19,27 @@
 /plugin install blueplan@blueplan-marketplace
 ```
 
+## 업데이트
+
+두 단계다. 마켓플레이스 메타데이터를 먼저 갱신하고, 그다음 플러그인을 올린다.
+
+```
+/plugin marketplace update blueplan-marketplace
+/plugin update blueplan
+```
+
+적용하려면 **Claude Code를 재시작**해야 한다 (스킬은 세션 시작 시 로드된다).
+
+첫 줄을 건너뛰면 안 된다. 마켓플레이스는 저장소 사본을 캐시하므로, 갱신하지 않으면 `/plugin update`가 캐시된 옛 버전을 보고 "이미 최신"이라고 답한다. 스킬을 고쳤는데 반영이 안 된다면 대개 이 두 가지 — `marketplace update` 누락, 또는 재시작 안 함 — 중 하나다.
+
+터미널에서 직접:
+
+```bash
+claude plugin marketplace update blueplan-marketplace
+claude plugin update blueplan
+claude plugin list          # 설치된 버전 확인
+```
+
 ## 시작하기
 
 프로젝트 루트에서:
