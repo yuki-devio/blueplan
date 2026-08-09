@@ -15,7 +15,7 @@
 ## 설치
 
 ```
-/plugin marketplace add /Users/antaejun/blueplan     # 로컬 경로 (또는 GitHub에 올린 뒤 owner/repo)
+/plugin marketplace add yuki-devio/blueplan
 /plugin install blueplan@blueplan-marketplace
 ```
 
