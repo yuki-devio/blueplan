@@ -58,7 +58,7 @@ docs/
 └── plans/               # 기능별 스텝 플랜
 .claude/docs/
 ├── INDEX.md             # 작업 유형 → 문서 라우팅 표
-├── conventions.md       # 코딩 컨벤션 (프로젝트별로 채움)
+├── conventions.md       # 코딩 컨벤션 (Next.js App Router 표준 룰 기본 탑재)
 ├── design-guide.md      # 디자인 규칙
 └── testing.md           # 테스트 명령·정책 (플랜의 test_command 원본)
 ```

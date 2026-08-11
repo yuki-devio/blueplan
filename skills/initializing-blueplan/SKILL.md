@@ -29,6 +29,10 @@ For each template file, if the target does not exist, copy it. If it EXISTS, do 
 
 - Replace `<PROJECT_NAME>` everywhere
 - `testing.md`: fill the detected test commands (confirm with the user if ambiguous) — this is the canonical source plans copy `test_command` from
+- `conventions.md` ships with **Next.js App Router rules pre-filled**. Adapt them to what you detect:
+  - Next.js project → keep them, and fill the version line from `package.json`. The version decides real rules: v14–15 use `middleware.ts`, v16+ use `proxy.ts`. Never leave that TODO unfilled.
+  - Not a Next.js project → **delete every Next.js section** (Server/Client 경계, Data Fetching, Async APIs, Routing, Rendering, and the Next-specific bullets under Project Structure / Error Handling). Shipping App Router rules to a CLI or backend project is worse than shipping nothing.
+  - Other React framework (Remix, Vite SPA, React Native) → delete the Next.js sections and leave TODO markers; do not translate the rules across frameworks
 - `INDEX.md`: keep all seeded rows; if a doc type clearly doesn't apply (e.g. design-guide for a pure CLI/library), you may comment out its row — but keep the file for later
 - Leave genuinely project-specific content as the `TODO(프로젝트별로 작성)` markers — do NOT invent conventions the user never stated. **Detected facts are not inventions**: things observable from the codebase (language, module system, directory layout, existing dependencies) SHOULD be written into `architecture.md`'s Overview/Module Map even without the user
 
@@ -56,7 +60,7 @@ List created files, skipped (already existing) files, and remaining TODOs.
 ## What NOT to Do
 
 - Never overwrite or delete existing user docs
-- Never invent PRD content, conventions, or design rules — TODO markers beat plausible fiction
+- Never invent PRD content, project conventions, or design rules — TODO markers beat plausible fiction. The shipped Next.js rules are not an exception to this: they are framework standards, kept only when the framework is actually detected, and deleted otherwise.
 - Don't scaffold into the blueplan plugin repo itself; the target is the user's project
 
 ## Checklist
@@ -64,5 +68,6 @@ List created files, skipped (already existing) files, and remaining TODOs.
 - [ ] Existing files detected and preserved
 - [ ] `docs/` + `.claude/docs/` trees created; `<PROJECT_NAME>` replaced
 - [ ] Test commands filled in `testing.md` (or confirmed TODO)
+- [ ] `conventions.md`: Next.js sections kept + version filled, or deleted entirely for non-Next.js projects
 - [ ] CLAUDE.md pointer block added
 - [ ] Remaining TODOs reported to the user
