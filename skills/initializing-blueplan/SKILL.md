@@ -10,7 +10,7 @@ description: Use when setting up blueplan in a new or existing project, scaffold
 Scaffolds the two documentation trees blueplan needs in a target project:
 
 - `docs/` — project memory: `architecture.md`, `prd.md`, `adr/`, `plans/`
-- `.claude/docs/` — binding reference rules routed via `INDEX.md`: `conventions.md`, `design-guide.md`, `testing.md`
+- `.claude/docs/` — binding reference rules routed via `INDEX.md`: `conventions.md`, `design-guide.md`, `testing.md`, `security.md`
 
 Templates live in this skill's `templates/` directory (`templates/docs/` → project `docs/`, `templates/claude-docs/` → project `.claude/docs/`). Resolve template paths relative to this SKILL.md, not the project cwd.
 
@@ -33,6 +33,8 @@ For each template file, if the target does not exist, copy it. If it EXISTS, do 
   - Next.js project → keep them, and fill the version line from `package.json`. The version decides real rules: v14–15 use `middleware.ts`, v16+ use `proxy.ts`. Never leave that TODO unfilled.
   - Not a Next.js project → **delete every Next.js section** (Server/Client 경계, Data Fetching, Async APIs, Routing, Rendering, and the Next-specific bullets under Project Structure / Error Handling). Shipping App Router rules to a CLI or backend project is worse than shipping nothing.
   - Other React framework (Remix, Vite SPA, React Native) → delete the Next.js sections and leave TODO markers; do not translate the rules across frameworks
+  - The `팀이 정할 것` table is genuinely a team choice. Infer entries from existing code where the codebase already answers them; otherwise leave TODO and report it. Do not pick for the team.
+- `security.md` ships with data-security rules (DAL, server action authz, input validation). Non-Next.js projects: delete the App Router specifics, keep the general principles. Projects with no auth, no database, and no user input at all: skip the file and remove its `INDEX.md` row.
 - `INDEX.md`: keep all seeded rows; if a doc type clearly doesn't apply (e.g. design-guide for a pure CLI/library), you may comment out its row — but keep the file for later
 - Leave genuinely project-specific content as the `TODO(프로젝트별로 작성)` markers — do NOT invent conventions the user never stated. **Detected facts are not inventions**: things observable from the codebase (language, module system, directory layout, existing dependencies) SHOULD be written into `architecture.md`'s Overview/Module Map even without the user
 
