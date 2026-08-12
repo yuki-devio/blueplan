@@ -69,6 +69,12 @@ test_command: "<exact command to run the full test suite, e.g. npm test>"
 
 ### Implementation Notes
 
+<!-- 실행 시 blueplan:executing-steps 가 채웁니다. 형식:
+     **What was done:** / **Files touched:** / **Decisions made:** / **Gotchas for next steps:**
+     **Commands run:** 실행한 모든 쉘 명령 (명령 | 조회·실행·변경·파괴 | 무엇을 하는가 | 결과)
+     **Test evidence:** 실패 확인 후 통과한 증거
+     이 내용이 docs/plans/NNN-*.html 리포트의 원본이 됩니다 (blueplan:reporting-progress). -->
+
 _(empty until executed — filled by blueplan:executing-steps)_
 
 ---
@@ -100,5 +106,11 @@ _(empty until executed — filled by blueplan:executing-steps)_
 - [ ] `<test_command>` passes
 
 ### Implementation Notes
+
+<!-- 실행 시 blueplan:executing-steps 가 채웁니다. 형식:
+     **What was done:** / **Files touched:** / **Decisions made:** / **Gotchas for next steps:**
+     **Commands run:** 실행한 모든 쉘 명령 (명령 | 조회·실행·변경·파괴 | 무엇을 하는가 | 결과)
+     **Test evidence:** 실패 확인 후 통과한 증거
+     이 내용이 docs/plans/NNN-*.html 리포트의 원본이 됩니다 (blueplan:reporting-progress). -->
 
 _(empty until executed — filled by blueplan:executing-steps)_

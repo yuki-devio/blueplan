@@ -1,0 +1,174 @@
+<!--
+  blueplan:reporting-progress 산출물 템플릿 → docs/plans/NNN-<slug>.html
+  규칙:
+   1) {{SLOT}}은 전부 채우거나 해당 블록째 삭제한다. 출력물에 {{ 가 남으면 안 된다.
+   2) <!-- SLOT:* --> / <!-- STEP:N --> 앵커는 지우지 않는다. 증분 갱신의 기준점이다.
+   3) 스텝 카드는 아래 STEP:1 블록을 그대로 복제해서 번호만 바꾼다.
+   4) 명령어 출력에 시크릿이 들어가지 않게 마스킹한 뒤 붙인다.
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PLAN_TITLE}} — 구현 리포트</title>
+<style>
+  :root {
+    --bg:#fbfbfd; --panel:#fff; --border:#e3e3e8; --text:#1a1a1f; --muted:#6b6b78;
+    --accent:#3b5bdb; --done:#2f9e44; --prog:#f08c00; --pend:#adb5bd; --block:#e03131;
+    --code-bg:#f4f4f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#131316; --panel:#1b1b20; --border:#2e2e36; --text:#ececf1; --muted:#9a9aa8;
+      --accent:#748ffc; --done:#51cf66; --prog:#ffc078; --pend:#5c5f66; --block:#ff8787;
+      --code-bg:#232329;
+    }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:2rem 1.25rem 5rem; background:var(--bg); color:var(--text);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Segoe UI",sans-serif;
+  }
+  .wrap { max-width:920px; margin:0 auto; }
+  h1 { font-size:1.7rem; margin:0 0 .3rem; letter-spacing:-.02em; }
+  h2 { font-size:1.15rem; margin:2.6rem 0 .9rem; letter-spacing:-.01em; }
+  h3 { font-size:1rem; margin:1.4rem 0 .5rem; }
+  .sub { color:var(--muted); font-size:.9rem; margin:0 0 1.5rem; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.25rem; margin:0 0 1rem; }
+  .bar { height:8px; background:var(--border); border-radius:99px; overflow:hidden; margin:.7rem 0 .4rem; }
+  .bar > i { display:block; height:100%; background:var(--done); border-radius:99px; }
+  .badge { display:inline-block; font-size:.75rem; font-weight:600; padding:.15rem .5rem; border-radius:99px; border:1px solid currentColor; }
+  .s-done{color:var(--done)} .s-prog{color:var(--prog)} .s-pend{color:var(--pend)} .s-block{color:var(--block)}
+  .warn { border-left:3px solid var(--block); background:color-mix(in srgb, var(--block) 8%, transparent); padding:.8rem 1rem; border-radius:8px; margin:1rem 0; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  .scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  th,td { text-align:left; padding:.55rem .6rem; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
+  code { background:var(--code-bg); padding:.12rem .35rem; border-radius:5px; font-size:.87em;
+         font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace; }
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:9px; padding:.85rem 1rem;
+        overflow-x:auto; font-size:.83rem; line-height:1.55; margin:.5rem 0; }
+  pre code { background:none; padding:0; }
+  .step { border-left:3px solid var(--pend); }
+  .step.done { border-left-color:var(--done); }
+  .step.prog { border-left-color:var(--prog); }
+  .step.block { border-left-color:var(--block); }
+  .step h3 { display:flex; align-items:center; gap:.6rem; margin-top:0; }
+  .meta { color:var(--muted); font-size:.85rem; }
+  .files li code { font-size:.85rem; }
+  ul { padding-left:1.2rem; } li { margin:.2rem 0; }
+  .mermaid { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:1rem; overflow-x:auto; }
+  footer { margin-top:3rem; color:var(--muted); font-size:.8rem; border-top:1px solid var(--border); padding-top:1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>{{PLAN_TITLE}}</h1>
+<p class="sub">플랜 <code>docs/plans/{{PLAN_FILE}}</code> · 마지막 갱신 {{UPDATED}}</p>
+
+<!-- SLOT:SUMMARY -->
+<div class="card">
+  <strong>진행률 {{DONE_COUNT}} / {{TOTAL_STEPS}} 스텝</strong>
+  <span class="badge s-{{STATUS_CLASS}}">{{STATUS_LABEL}}</span>
+  <div class="bar"><i style="width:{{PROGRESS_PCT}}%"></i></div>
+  <p class="meta">{{SUMMARY_ONE_LINER}}</p>
+</div>
+
+<!-- 파괴적 명령이 하나도 없으면 이 블록을 통째로 삭제할 것 -->
+<div class="warn">
+  <strong>⚠️ 되돌리기 어려운 명령이 실행되었습니다</strong>
+  <ul>{{DESTRUCTIVE_LIST}}</ul>
+</div>
+<!-- /SLOT:SUMMARY -->
+
+<h2>이 기능은 무엇인가</h2>
+<div class="card">{{CONTEXT_PLAIN}}</div>
+
+<!-- SLOT:FLOW -->
+<h2>어떻게 동작하나</h2>
+<pre class="mermaid">
+{{FLOW_DIAGRAM}}
+</pre>
+<p class="meta">{{FLOW_CAPTION}}</p>
+<!-- /SLOT:FLOW -->
+
+<!-- SLOT:TECH -->
+<h2>사용된 기술</h2>
+<div class="card scroll">
+<table>
+  <thead><tr><th>기술</th><th>어디에 쓰였나</th><th>왜 이걸 썼나</th></tr></thead>
+  <tbody>{{TECH_ROWS}}</tbody>
+</table>
+</div>
+<!-- /SLOT:TECH -->
+
+<!-- SLOT:STEPGRAPH -->
+<h2>스텝 의존 관계</h2>
+<pre class="mermaid">
+{{STEP_GRAPH}}
+</pre>
+<!-- /SLOT:STEPGRAPH -->
+
+<h2>스텝별 상세</h2>
+
+<!-- STEP:1 -->
+<div class="card step {{STEP_CLASS}}">
+  <h3><span class="badge s-{{STEP_CLASS}}">{{STEP_STATUS}}</span> Step {{STEP_NUM}}. {{STEP_TITLE}}</h3>
+  <p class="meta">{{STEP_DATE}}{{STEP_DEPENDS}}</p>
+
+  <p>{{STEP_WHAT}}</p>
+
+  <h4>건드린 파일</h4>
+  <ul class="files">{{STEP_FILES}}</ul>
+
+  <h4>결정 사항</h4>
+  <p>{{STEP_DECISIONS}}</p>
+
+  <h4>실행한 명령어</h4>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>명령어</th><th>종류</th><th>무엇을 하는가</th><th>결과</th></tr></thead>
+    <tbody>
+      <!-- 종류: 🔍 조회 / ▶️ 실행 / 📝 변경 / ⚠️ 파괴 -->
+      <tr>
+        <td><code>{{CMD}}</code></td>
+        <td>{{CMD_KIND}}</td>
+        <td>{{CMD_EXPLAIN}}</td>
+        <td>{{CMD_RESULT}}</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>테스트 증거</h4>
+  <p class="meta">실패를 먼저 확인한 뒤 구현했습니다.</p>
+  <pre><code>{{TEST_FAIL_OUTPUT}}</code></pre>
+  <pre><code>{{TEST_PASS_OUTPUT}}</code></pre>
+
+  <h4>다음 스텝이 알아야 할 것</h4>
+  <p>{{STEP_GOTCHAS}}</p>
+</div>
+<!-- /STEP:1 -->
+
+<!-- 스텝마다 위 블록을 복제하고 STEP:N 앵커 번호를 맞출 것.
+     아직 시작하지 않은 스텝은 본문 없이 제목 + 대기 배지만 남긴다. -->
+
+<footer>
+  blueplan:reporting-progress 가 <code>docs/plans/{{PLAN_FILE}}</code> 에서 생성했습니다.
+  이 페이지는 플랜 문서의 렌더링이며, 사실의 원본은 플랜 문서입니다.
+</footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  // 스크립트 로드 실패 시 <pre class="mermaid"> 안의 소스가 그대로 보인다 (의도된 폴백).
+  if (window.mermaid) {
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'default', securityLevel: 'strict' });
+  }
+</script>
+</body>
+</html>

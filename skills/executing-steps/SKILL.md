@@ -13,6 +13,7 @@ The plan file (`docs/plans/NNN-<slug>.md`) is the ONLY memory shared between ste
 
 **REQUIRED SUB-SKILL:** blueplan:enforcing-tdd — governs all implementation (the mandate is also embedded in the implementer prompt, since subagents do not load skills).
 **REQUIRED SUB-SKILL:** blueplan:consulting-references — route `.claude/docs/` docs into each dispatch.
+**REQUIRED SUB-SKILL:** blueplan:reporting-progress — render the human-facing HTML report after each step is recorded.
 
 ## When to Use
 
@@ -63,10 +64,18 @@ Fill the step's `### Implementation Notes` in this exact format:
 **Files touched:** `a.ts` (created), `b.ts` (modified — added X)
 **Decisions made:** <deviations from the plan and why; "none" if none>
 **Gotchas for next steps:** <traps, surprising APIs, changed assumptions; "none">
+**Commands run:**
+| `<command>` | 조회/실행/변경/파괴 | <무엇을 하는 명령인지> | <결과> |
 **Test evidence:** `<test_command>` → <N passed> (observed failing first: <test names>)
 ```
 
+Copy **Commands run** from the subagent's report verbatim, plus any command YOU ran during verification. This is the only record of what actually touched the machine — reconstructing it later is impossible. If the subagent omitted it, ask for it in a follow-up rather than writing `none`.
+
 Then flip the step's `**Status:** done`, update its Step Index row, frontmatter `current_step` and `updated:`. Write the file before doing anything else.
+
+### 6b. Render the report
+
+Apply blueplan:reporting-progress to regenerate `docs/plans/NNN-<slug>.html` from the plan you just updated. Do this after the plan file is written, never before — the report renders the plan, so an unsaved plan produces a wrong report.
 
 ### 7. On failure
 
@@ -87,6 +96,8 @@ Spanning sessions is normal, not a failure. A fresh session needs nothing but th
 | "This step is tiny, I'll just do it inline" | Inline work bloats orchestrator context and skips the note-taking discipline. Dispatch it. |
 | "The subagent said tests pass" | Reports lie. Run `test_command` yourself, every step. |
 | "I'll write the notes after finishing a few steps" | A crash loses everything. Notes are written per step, immediately. |
+| "I'll regenerate the HTML report at the end, once" | The report is how the user follows along mid-work. A report that only exists after the last step is not a progress report. |
+| "The commands were obvious, I'll reconstruct them" | Reconstructed logs are fiction. Record what ran or record that it wasn't captured. |
 | "The plan is slightly wrong, I'll silently adapt" | Deviations go in **Decisions made** so later steps and sessions know. Large deviations → stop, revise the plan with the user. |
 
 ## Red Flags — STOP
@@ -103,3 +114,5 @@ Spanning sessions is normal, not a failure. A fresh session needs nothing but th
 - [ ] `test_command` run by ME and passing
 - [ ] Failing-first test evidence present in report
 - [ ] Implementation Notes recorded in exact format; Status/Index/frontmatter updated
+- [ ] **Commands run** captured from the subagent (not `none` by default), secrets masked
+- [ ] `docs/plans/NNN-<slug>.html` re-rendered after the plan was written

@@ -21,12 +21,13 @@ documenting-projects         (ongoing: architecture, PRD, ADRs stay current)
 planning-features            (per feature: docs/plans/NNN-*.md, step-by-step, approved by user)
         │
         ▼
-executing-steps ◄──────┐     (loop: dispatch subagent → verify → record notes → next step)
+executing-steps ◄──────┐     (loop: dispatch subagent → verify → record notes → render report → next step)
         │              │
         └──────────────┘
    cross-cutting, always on:
    • enforcing-tdd            (tests first, in every implementation)
    • consulting-references    (.claude/docs/INDEX.md routing before any task)
+   • reporting-progress       (per step: docs/plans/NNN-*.html for the human reader)
 ```
 
 ## Which Skill When
@@ -39,6 +40,7 @@ executing-steps ◄──────┐     (loop: dispatch subagent → verify
 | "구현해줘", "이어서 해줘", executing/resuming a plan | blueplan:executing-steps |
 | Writing any implementation code | blueplan:enforcing-tdd |
 | About to code/design/test — which project rules apply? | blueplan:consulting-references |
+| "뭐 만들었어?", 다이어그램·리포트 요청, 실행된 명령어 확인 | blueplan:reporting-progress |
 | "AI가 뭘 할 수 있어?", 권한·위험 점검, 프로덕션 DB/배포 앞에서 불안할 때 | blueplan:auditing-permissions |
 
 ## The One Rule

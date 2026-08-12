@@ -45,6 +45,14 @@ If the step turns out to be impossible as specified (wrong assumption, missing d
 **Files touched:** <each file: created/modified — what changed>
 **Decisions made:** <deviations from the step spec and why; "none" if none>
 **Gotchas for next steps:** <traps, surprising APIs, changed assumptions; "none">
+**Commands run:** <EVERY shell command you executed, in order, one per line, as:
+`command` | 조회|실행|변경|파괴 | what it does in one Korean clause | result in one clause
+
+Include the ones that failed and the ones you ran just to look around — a reader needs the real
+sequence, not a cleaned-up one. Classify by effect: 조회 reads only; 실행 runs code (tests, build);
+변경 modifies files or dependencies but is recoverable; 파괴 loses data, history, or remote state.
+Mask any secret inside a command (`-H "Authorization: Bearer sk-abcd…"`). If you ran no commands
+other than the test command, say so explicitly.>
 **Failing test output (step 2):**
 ```
 <paste>
