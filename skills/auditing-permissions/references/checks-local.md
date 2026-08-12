@@ -45,6 +45,12 @@ prompts during a vibe-coding session is exactly the failure mode this audit exis
 Note honestly in the report that this blocks the `Read` tool, not `Bash(cat ...)` — so it only
 holds if Bash is not broadly allowed.
 
+If blueplan is installed, its `PreToolUse` guard already blocks both paths (`Read` and `cat .env`)
+and keeps working under `bypassPermissions`. Check whether it is active before recommending the
+deny rules above — and check `.claude/blueplan-guard.json` for `enabled: false`, a broad
+`allowCommands`, or `allowPaths` entries that re-open what the report assumes is closed. An
+`enabled: false` in a project that believes it is protected is itself a 🟠 finding.
+
 ### Destructive command exposure
 
 Grep the merged allow list and the project's own scripts for these. A `package.json` script

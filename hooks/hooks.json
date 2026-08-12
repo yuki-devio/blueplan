@@ -1,0 +1,17 @@
+{
+  "description": "blueplan guard — blocks reading secret files (.env, keys, credentials) and running irreversible commands (rm, git reset --hard, force push, DB resets). Runs even under bypassPermissions. Configure via .claude/blueplan-guard.json; disable with BLUEPLAN_GUARD=off.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Read|Grep|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/guard.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

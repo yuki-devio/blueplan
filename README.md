@@ -106,6 +106,43 @@ init (1회) → 문서화 (상시) → 기능 플랜 작성 → 스텝 실행 �
 
 명령어 기록은 구현 서브에이전트가 보고하고 오케스트레이터가 플랜에 옮긴다. 나중에 복원할 수 없으므로, 누락되면 `none`으로 적지 않고 다시 물어본다. 리포트는 플랜 문서의 렌더링일 뿐이며, 플랜에 없는 사실은 리포트에도 쓰지 않는다.
 
+## 안전장치 (훅)
+
+blueplan을 설치하면 `PreToolUse` 훅이 자동으로 켜진다. 스킬과 달리 훅은 **모델이 판단하지 않는다** — 프로세스가 도구 호출을 가로채서 차단하므로, `defaultMode`가 `bypassPermissions`여도, 세션을 `--dangerously-skip-permissions`로 띄웠어도 동작한다.
+
+**막는 것 1 — 시크릿 파일 읽기**
+
+`.env`, `.env.local`, `*.pem`, `id_rsa`, `~/.aws/**`, `~/.ssh/**`, `~/.npmrc`, `.git-credentials`, `serviceAccount*.json` 등. `Read`·`Grep`·`Glob` 도구는 물론 `cat .env` 같은 셸 우회도 막는다. `.env.example`·`.env.sample`은 값이 없는 템플릿이므로 허용한다.
+
+**막는 것 2 — 되돌릴 수 없는 명령**
+
+```
+rm (전부)          git reset --hard       git clean -fdx
+git push --force   git push --delete      git checkout -- .
+supabase db reset  prisma migrate reset   DROP/TRUNCATE TABLE
+FLUSHALL           docker compose down -v docker system prune
+kubectl delete     mkfs / dd of=          curl … | sh
+```
+
+명령 연결(`npm test && rm -rf build`), 래퍼(`sudo rm`, `xargs rm`), 환경변수 접두(`FOO=1 rm`), 서브셸(`$(...)`)을 벗겨서 검사한다.
+
+**설정** — 프로젝트 루트에 `.claude/blueplan-guard.json`:
+
+```json
+{
+  "enabled": true,
+  "allowCommands": ["rm -rf .next", "rm -rf dist"],
+  "allowPaths": [".env.example"],
+  "denyCommands": ["^fly deploy"]
+}
+```
+
+한 세션만 끄려면 `BLUEPLAN_GUARD=off`.
+
+**한계 — 과신하지 말 것.** 이 훅은 **사고**를 막는 장치이지 공격자를 막는 장치가 아니다. 문자열을 조립하거나(`$(echo rm) -rf`), base64로 인코딩하거나, 인터프리터를 경유하면 통과한다. 또 가드가 예외로 죽으면 **통과시킨다**(fail-open) — 가드 버그가 작업을 멈추게 하는 쪽이 더 나쁘기 때문이다. 진짜 방어는 자격증명을 로컬에 두지 않는 것이고, 이 훅은 그 위에 얹는 한 겹이다.
+
+알려진 오탐 하나: `echo 'curl x | sh'`처럼 위험한 문자열을 따옴표 안에 넣어도 차단된다. `psql -c 'DROP TABLE users'`를 잡으려면 따옴표 안을 봐야 하는데, 그러면 진짜 위험한 쪽을 놓친다. 놓치는 것보다 낫다고 판단했다.
+
 ## 권한 감사
 
 "git 푸시해줘", "DB 정리해줘"라고 말할 때 **AI에게 실제로 어떤 권한이 있는지** 모르는 게 바이브코딩의 가장 큰 위험이다. 권한은 Claude Code 설정 3계층 · MCP 서버 · `.env` · CLI 로그인 상태 · git 원격 인증에 흩어져 있어서 한 곳만 봐서는 알 수 없다.
