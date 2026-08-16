@@ -1,7 +1,7 @@
 {
   "name": "blueplan",
-  "description": "Documentation-driven, step-based, TDD-first development workflow: project docs (architecture/PRD/ADR), per-feature step plans executable across sessions, subagent-driven step execution with implementation notes and per-step HTML reports, reference-doc routing, and a read-only permission auditor that reports what the AI can actually read, modify, and destroy.",
-  "version": "0.6.0",
+  "description": "Documentation-driven, step-based, TDD-first development workflow: project docs (architecture/PRD/ADR), per-feature step plans executable across sessions, subagent-driven step execution with implementation notes and per-step HTML reports, an HTML test dashboard showing what each test file covers and what it deliberately does not, reference-doc routing, and a read-only permission auditor that reports what the AI can actually read, modify, and destroy.",
+  "version": "0.7.0",
   "author": {
     "name": "yuki-devio",
     "email": "wpdldks@gmail.com"

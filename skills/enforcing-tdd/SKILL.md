@@ -65,3 +65,8 @@ Reproduce the bug as a failing test BEFORE touching the code. The fix is done wh
 ## Within blueplan
 
 `blueplan:executing-steps` embeds this mandate into every implementer subagent prompt (subagents don't load skills), and the orchestrator rejects any step report lacking the failing-run output. When you code OUTSIDE a plan, this skill still applies — TDD is not conditional on having a plan.
+
+When the cycle closes and the suite is green, apply `blueplan:reporting-tests` to refresh
+`docs/tests/index.html` so the new test shows up with what it covers and what it deliberately does
+not. Inside a plan, `blueplan:executing-steps` triggers this for you at step 6b; outside one, it is
+on you.

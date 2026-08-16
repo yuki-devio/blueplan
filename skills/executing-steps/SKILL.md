@@ -14,6 +14,7 @@ The plan file (`docs/plans/NNN-<slug>.md`) is the ONLY memory shared between ste
 **REQUIRED SUB-SKILL:** blueplan:enforcing-tdd — governs all implementation (the mandate is also embedded in the implementer prompt, since subagents do not load skills).
 **REQUIRED SUB-SKILL:** blueplan:consulting-references — route `.claude/docs/` docs into each dispatch.
 **REQUIRED SUB-SKILL:** blueplan:reporting-progress — render the human-facing HTML report after each step is recorded.
+**REQUIRED SUB-SKILL:** blueplan:reporting-tests — refresh the test dashboard after any step that touched test files.
 
 ## When to Use
 
@@ -67,7 +68,12 @@ Fill the step's `### Implementation Notes` in this exact format:
 **Commands run:**
 | `<command>` | 조회/실행/변경/파괴 | <무엇을 하는 명령인지> | <결과> |
 **Test evidence:** `<test_command>` → <N passed> (observed failing first: <test names>)
+**Test scope:** `<test file>` — <검증 대상> | 여기까지 본다: <...> | 여기는 안 본다: <모킹·스킵·미커버>
 ```
+
+Copy **Test scope** from the subagent's report verbatim too — the implementer chose the mocks, so it
+is the only party that knows what stopped being covered. Omit the line only when the step created no
+test file.
 
 Copy **Commands run** from the subagent's report verbatim, plus any command YOU ran during verification. This is the only record of what actually touched the machine — reconstructing it later is impossible. If the subagent omitted it, ask for it in a follow-up rather than writing `none`.
 
@@ -76,6 +82,10 @@ Then flip the step's `**Status:** done`, update its Step Index row, frontmatter 
 ### 6b. Render the report
 
 Apply blueplan:reporting-progress to regenerate `docs/plans/NNN-<slug>.html` from the plan you just updated. Do this after the plan file is written, never before — the report renders the plan, so an unsaved plan produces a wrong report.
+
+Then, **if this step created or modified any test file** (check the step's `Files touched`), apply
+blueplan:reporting-tests to refresh `docs/tests/index.html`. A step that only touched source or config
+skips this — the dashboard would be unchanged and re-running the suite for it is wasted time.
 
 ### 7. On failure
 
@@ -116,3 +126,4 @@ Spanning sessions is normal, not a failure. A fresh session needs nothing but th
 - [ ] Implementation Notes recorded in exact format; Status/Index/frontmatter updated
 - [ ] **Commands run** captured from the subagent (not `none` by default), secrets masked
 - [ ] `docs/plans/NNN-<slug>.html` re-rendered after the plan was written
+- [ ] `docs/tests/index.html` refreshed if the step touched test files (skipped otherwise)

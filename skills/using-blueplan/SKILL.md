@@ -28,6 +28,7 @@ executing-steps ◄──────┐     (loop: dispatch subagent → verify
    • enforcing-tdd            (tests first, in every implementation)
    • consulting-references    (.claude/docs/INDEX.md routing before any task)
    • reporting-progress       (per step: docs/plans/NNN-*.html for the human reader)
+   • reporting-tests          (when tests change: docs/tests/index.html — what they cover, results)
 ```
 
 ## Which Skill When
@@ -41,6 +42,7 @@ executing-steps ◄──────┐     (loop: dispatch subagent → verify
 | Writing any implementation code | blueplan:enforcing-tdd |
 | About to code/design/test — which project rules apply? | blueplan:consulting-references |
 | "뭐 만들었어?", 다이어그램·리포트 요청, 실행된 명령어 확인 | blueplan:reporting-progress |
+| 테스트 코드를 쓰거나 고친 직후, "무슨 테스트 있어?", "어디까지 테스트했어?", 커버리지 확인 | blueplan:reporting-tests |
 | "AI가 뭘 할 수 있어?", 권한·위험 점검, 프로덕션 DB/배포 앞에서 불안할 때 | blueplan:auditing-permissions |
 
 ## The One Rule

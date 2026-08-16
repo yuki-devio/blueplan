@@ -61,4 +61,11 @@ other than the test command, say so explicitly.>
 ```
 <paste>
 ```
+**Test scope:** <for EACH test file you created or modified, one block:
+`path/to/file.test.ts` — 무엇을 검증하는지 한 줄 | 검증 대상 소스 모듈 |
+여기까지 본다: <실제로 실행되는 코드 경로·에러 케이스> |
+여기는 안 본다: <모킹으로 대체한 것, 스킵한 케이스, 단언 없는 분기, 통합/E2E로 미룬 것>
+
+You mocked it, so you are the only one who knows what stopped being tested. "없음"은 모킹도 스킵도
+미커버 분기도 하나도 없을 때만 쓴다. 테스트 파일을 만들지 않았으면 "해당 없음".>
 **Acceptance criteria:** <each criterion from the step: met / not met + evidence>

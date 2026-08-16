@@ -73,7 +73,9 @@ test_command: "<exact command to run the full test suite, e.g. npm test>"
      **What was done:** / **Files touched:** / **Decisions made:** / **Gotchas for next steps:**
      **Commands run:** 실행한 모든 쉘 명령 (명령 | 조회·실행·변경·파괴 | 무엇을 하는가 | 결과)
      **Test evidence:** 실패 확인 후 통과한 증거
-     이 내용이 docs/plans/NNN-*.html 리포트의 원본이 됩니다 (blueplan:reporting-progress). -->
+     **Test scope:** 테스트 파일별 — 무엇을 검증하고, 무엇을 모킹해서 안 보는지
+     이 내용이 docs/plans/NNN-*.html 리포트의 원본이 됩니다 (blueplan:reporting-progress).
+     Test scope 는 docs/tests/index.html 의 원본이 됩니다 (blueplan:reporting-tests). -->
 
 _(empty until executed — filled by blueplan:executing-steps)_
 
@@ -111,6 +113,8 @@ _(empty until executed — filled by blueplan:executing-steps)_
      **What was done:** / **Files touched:** / **Decisions made:** / **Gotchas for next steps:**
      **Commands run:** 실행한 모든 쉘 명령 (명령 | 조회·실행·변경·파괴 | 무엇을 하는가 | 결과)
      **Test evidence:** 실패 확인 후 통과한 증거
-     이 내용이 docs/plans/NNN-*.html 리포트의 원본이 됩니다 (blueplan:reporting-progress). -->
+     **Test scope:** 테스트 파일별 — 무엇을 검증하고, 무엇을 모킹해서 안 보는지
+     이 내용이 docs/plans/NNN-*.html 리포트의 원본이 됩니다 (blueplan:reporting-progress).
+     Test scope 는 docs/tests/index.html 의 원본이 됩니다 (blueplan:reporting-tests). -->
 
 _(empty until executed — filled by blueplan:executing-steps)_

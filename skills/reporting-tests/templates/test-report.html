@@ -1,0 +1,202 @@
+<!--
+  blueplan:reporting-tests 산출물 템플릿 → docs/tests/index.html
+  규칙:
+   1) {{SLOT}}은 전부 채우거나 해당 블록째 삭제한다. 출력물에 {{ 가 남으면 안 된다.
+   2) <!-- SLOT:* --> / <!-- TESTFILE:<경로> --> 앵커는 지우지 않는다. 증분 갱신의 기준점이다.
+   3) 테스트 파일 카드는 아래 TESTFILE 블록을 복제하고 앵커의 경로를 실제 경로로 바꾼다.
+   4) 파일 링크는 docs/tests/index.html 기준 상대경로다 → 저장소 루트는 ../../ 이다.
+   5) 실행하지 않은 것은 "미실행"이라고 쓴다. 결과를 추측해서 채우지 않는다.
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PROJECT_NAME}} — 테스트 리포트</title>
+<style>
+  :root {
+    --bg:#fbfbfd; --panel:#fff; --border:#e3e3e8; --text:#1a1a1f; --muted:#6b6b78;
+    --accent:#3b5bdb; --pass:#2f9e44; --fail:#e03131; --skip:#f08c00; --none:#adb5bd;
+    --code-bg:#f4f4f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#131316; --panel:#1b1b20; --border:#2e2e36; --text:#ececf1; --muted:#9a9aa8;
+      --accent:#748ffc; --pass:#51cf66; --fail:#ff8787; --skip:#ffc078; --none:#5c5f66;
+      --code-bg:#232329;
+    }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:2rem 1.25rem 5rem; background:var(--bg); color:var(--text);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Segoe UI",sans-serif;
+  }
+  .wrap { max-width:920px; margin:0 auto; }
+  h1 { font-size:1.7rem; margin:0 0 .3rem; letter-spacing:-.02em; }
+  h2 { font-size:1.15rem; margin:2.6rem 0 .9rem; letter-spacing:-.01em; }
+  h3 { font-size:1rem; margin:1.4rem 0 .5rem; }
+  h4 { font-size:.85rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:1.1rem 0 .35rem; }
+  .sub { color:var(--muted); font-size:.9rem; margin:0 0 1.5rem; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.25rem; margin:0 0 1rem; }
+  .stats { display:flex; flex-wrap:wrap; gap:1.4rem; margin:.2rem 0 .6rem; }
+  .stat { min-width:5.5rem; }
+  .stat b { display:block; font-size:1.5rem; line-height:1.2; letter-spacing:-.02em; }
+  .stat span { color:var(--muted); font-size:.8rem; }
+  .badge { display:inline-block; font-size:.75rem; font-weight:600; padding:.15rem .5rem; border-radius:99px; border:1px solid currentColor; }
+  .t-pass{color:var(--pass)} .t-fail{color:var(--fail)} .t-skip{color:var(--skip)} .t-none{color:var(--none)}
+  .warn { border-left:3px solid var(--fail); background:color-mix(in srgb, var(--fail) 8%, transparent); padding:.8rem 1rem; border-radius:8px; margin:1rem 0; }
+  .note { border-left:3px solid var(--skip); background:color-mix(in srgb, var(--skip) 8%, transparent); padding:.8rem 1rem; border-radius:8px; margin:1rem 0; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  .scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  th,td { text-align:left; padding:.55rem .6rem; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
+  code { background:var(--code-bg); padding:.12rem .35rem; border-radius:5px; font-size:.87em;
+         font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace; }
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:9px; padding:.85rem 1rem;
+        overflow-x:auto; font-size:.83rem; line-height:1.55; margin:.5rem 0; }
+  pre code { background:none; padding:0; }
+  a { color:var(--accent); }
+  .file { border-left:3px solid var(--none); }
+  .file.pass { border-left-color:var(--pass); }
+  .file.fail { border-left-color:var(--fail); }
+  .file.skip { border-left-color:var(--skip); }
+  .file h3 { display:flex; align-items:center; gap:.6rem; margin-top:0; flex-wrap:wrap; }
+  .file h3 a { font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace; font-size:.95rem; }
+  .meta { color:var(--muted); font-size:.85rem; }
+  ul { padding-left:1.2rem; } li { margin:.2rem 0; }
+  .bounds { display:grid; grid-template-columns:1fr; gap:.6rem; }
+  @media (min-width:640px) { .bounds { grid-template-columns:1fr 1fr; } }
+  .bounds > div { border:1px solid var(--border); border-radius:9px; padding:.7rem .9rem; }
+  .bounds h5 { margin:0 0 .3rem; font-size:.85rem; }
+  .mermaid { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:1rem; overflow-x:auto; }
+  footer { margin-top:3rem; color:var(--muted); font-size:.8rem; border-top:1px solid var(--border); padding-top:1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>{{PROJECT_NAME}} — 테스트 리포트</h1>
+<p class="sub">테스트 정책 <code>.claude/docs/testing.md</code> · 마지막 갱신 {{UPDATED}}</p>
+
+<!-- SLOT:SUMMARY -->
+<div class="card">
+  <div class="stats">
+    <div class="stat"><b>{{FILE_COUNT}}</b><span>테스트 파일</span></div>
+    <div class="stat"><b>{{CASE_COUNT}}</b><span>케이스</span></div>
+    <div class="stat t-pass"><b>{{PASS_COUNT}}</b><span>통과</span></div>
+    <div class="stat t-fail"><b>{{FAIL_COUNT}}</b><span>실패</span></div>
+    <div class="stat t-skip"><b>{{SKIP_COUNT}}</b><span>스킵</span></div>
+    <!-- 커버리지를 측정하지 않았으면 아래 한 줄을 삭제할 것 -->
+    <div class="stat"><b>{{COVERAGE_PCT}}%</b><span>커버리지 ({{COVERAGE_KIND}})</span></div>
+  </div>
+  <p class="meta">
+    마지막 실행 <code>{{RUN_COMMAND}}</code> · {{RUN_AT}} · {{RUN_DURATION}}
+  </p>
+</div>
+
+<!-- 실패가 하나도 없으면 이 블록을 통째로 삭제할 것 -->
+<div class="warn">
+  <strong>❌ 실패한 테스트가 있습니다</strong>
+  <ul>{{FAILING_LIST}}</ul>
+</div>
+
+<!-- 모든 테스트를 실제로 돌렸으면 이 블록을 통째로 삭제할 것 -->
+<div class="note">
+  <strong>⏳ 이 리포트의 일부는 미실행 상태입니다</strong>
+  <p class="meta">{{UNRUN_REASON}}</p>
+</div>
+<!-- /SLOT:SUMMARY -->
+
+<!-- SLOT:MAP -->
+<h2>무엇을 검증하고 있나</h2>
+<pre class="mermaid">
+{{TEST_MAP}}
+</pre>
+<p class="meta">{{MAP_CAPTION}}</p>
+<!-- /SLOT:MAP -->
+
+<h2>테스트 파일별 상세</h2>
+
+<!-- TESTFILE:{{TEST_FILE_PATH}} -->
+<div class="card file {{FILE_CLASS}}">
+  <h3>
+    <span class="badge t-{{FILE_CLASS}}">{{FILE_STATUS}}</span>
+    <a href="../../{{TEST_FILE_PATH}}">{{TEST_FILE_PATH}}</a>
+  </h3>
+  <p>{{FILE_PURPOSE}}</p>
+  <p class="meta">검증 대상: {{FILE_TARGETS}} · 종류: {{FILE_KIND}}</p>
+
+  <h4>케이스</h4>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>테스트 이름</th><th>어떤 동작을 규정하는가</th><th>결과</th><th>소요</th></tr></thead>
+    <tbody>
+      <!-- 결과: ✅ 통과 / ❌ 실패 / ⏭️ 스킵 / ⏳ 미실행 -->
+      <tr>
+        <td><code>{{CASE_NAME}}</code></td>
+        <td>{{CASE_MEANING}}</td>
+        <td>{{CASE_RESULT}}</td>
+        <td>{{CASE_DURATION}}</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>어디까지 보나</h4>
+  <div class="bounds">
+    <div>
+      <h5>여기까지 검증한다</h5>
+      <ul>{{FILE_COVERED}}</ul>
+    </div>
+    <div>
+      <h5>여기는 보지 않는다</h5>
+      <ul>{{FILE_NOT_COVERED}}</ul>
+    </div>
+  </div>
+
+  <h4>이 파일만 실행하기</h4>
+  <pre><code>{{FILE_RUN_COMMAND}}</code></pre>
+</div>
+<!-- /TESTFILE:{{TEST_FILE_PATH}} -->
+
+<!-- 테스트 파일마다 위 블록을 복제하고 TESTFILE 앵커 경로를 맞출 것. -->
+
+<!-- SLOT:FAILURES -->
+<h2>실패·스킵 상세</h2>
+<div class="card">
+  <h3><code>{{FAILING_CASE_NAME}}</code></h3>
+  <p class="meta">{{FAILING_CASE_FILE}}</p>
+  <pre><code>{{FAILING_OUTPUT}}</code></pre>
+  <p>{{FAILING_READING}}</p>
+</div>
+<!-- 실패도 스킵도 없으면 이 SLOT 안의 카드를 지우고 아래 한 줄만 남길 것:
+     <div class="card"><p class="meta">실패·스킵 없음.</p></div> -->
+<!-- /SLOT:FAILURES -->
+
+<!-- SLOT:GAPS -->
+<h2>테스트가 없는 곳</h2>
+<div class="card scroll">
+<table>
+  <thead><tr><th>소스</th><th>무엇을 하는 코드인가</th><th>왜 비어 있나</th></tr></thead>
+  <tbody>{{GAP_ROWS}}</tbody>
+</table>
+</div>
+<!-- /SLOT:GAPS -->
+
+<footer>
+  blueplan:reporting-tests 가 테스트 소스와 실제 실행 결과에서 생성했습니다.
+  결과 칸은 실행한 것만 채워집니다 — <code>⏳ 미실행</code>은 아직 돌리지 않았다는 뜻이며, 통과를 의미하지 않습니다.
+</footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  // 스크립트 로드 실패 시 <pre class="mermaid"> 안의 소스가 그대로 보인다 (의도된 폴백).
+  if (window.mermaid) {
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'default', securityLevel: 'strict' });
+  }
+</script>
+</body>
+</html>
